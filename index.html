@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Escuela Ancla · Red de recursos</title>
+<style>
+:root{--bg:#f3f1ea;--sf:#fff;--tx:#1d2a22;--mu:#5b675f;--ln:#d8d4c6;--ac:#2f6b4f;--ac2:#fff;--wr:#b4541a;--bd:#a32d2d;--ok:#2f6b4f;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121a15;--sf:#1a251e;--tx:#e8eee9;--mu:#9bab9f;--ln:#2e3d33;--ac:#6fc29a;--ac2:#0f1a13;--wr:#e8a064;--bd:#ef8b8b;--ok:#6fc29a;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#121a15;--sf:#1a251e;--tx:#e8eee9;--mu:#9bab9f;--ln:#2e3d33;--ac:#6fc29a;--ac2:#0f1a13;--wr:#e8a064;--bd:#ef8b8b;--ok:#6fc29a;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.5 Georgia,"Times New Roman",serif}
+h1,h2,h3,button,select,input,textarea,label,.tag,th{font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:920px;margin:0 auto;padding:16px}
+h1{font-size:1.6rem;margin:0 0 2px}
+h2{font-size:1.15rem;margin:0 0 8px}
+p{margin:.3em 0}
+.mu{color:var(--mu);font-size:.92rem}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;background:var(--sf);border:1px solid var(--ln);border-radius:10px;padding:10px 12px;margin:12px 0}
+.net{font:600 .9rem system-ui,sans-serif;display:flex;gap:8px;align-items:center}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--ok)}
+.off .dot{background:var(--wr)}
+nav{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 14px}
+button,select,input,textarea{font-size:.95rem;border:1px solid var(--ln);background:var(--sf);color:var(--tx);border-radius:8px;padding:8px 10px}
+button{cursor:pointer}
+button.p,nav button.on{background:var(--ac);color:var(--ac2);border-color:var(--ac)}
+button:disabled{opacity:.45;cursor:not-allowed}
+:focus-visible{outline:3px solid var(--wr);outline-offset:2px}
+.card{background:var(--sf);border:1px solid var(--ln);border-radius:10px;padding:14px;margin-bottom:12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+label{display:block;font-size:.88rem;font-weight:600;margin:8px 0 3px}
+input,select,textarea{width:100%}
+.tag{display:inline-block;font-size:.8rem;font-weight:600;padding:2px 8px;border-radius:99px;border:1px solid var(--ln)}
+.t-confirmar{color:var(--wr)}.t-publicada{color:var(--ac)}.t-comprometida{color:var(--tx)}.t-enviada{color:var(--wr)}.t-recibida{color:var(--ok)}
+.warn{border-left:4px solid var(--wr);padding-left:10px}
+.bad{color:var(--bd);font-weight:600}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:8px}
+.tw{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.88rem}
+th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--ln);white-space:nowrap}
+.rule{display:flex;gap:10px;margin:8px 0}
+.rule b{min-width:1.4em}
+.meter{height:8px;background:var(--ln);border-radius:4px;overflow:hidden;margin:4px 0}
+.meter i{display:block;height:100%;background:var(--ac)}
+</style>
+</head>
+<body>
+<main>
+<h1>Escuela Ancla · Red de recursos</h1>
+<p class="mu">Prototipo con datos de ejemplo. Las escuelas piden lo que necesitan; entidades, colegios y empresas lo donan; todo queda en un registro público.</p>
+
+<div class="bar" id="bar"></div>
+<nav id="nav"></nav>
+<section id="view"></section>
+</main>
+
+<script>
+var GR=['Preescolar','1.º','2.º','3.º','4.º','5.º'];
+var CAT={'Libros de texto':[1,'grado','ejemplar por estudiante del grado'],'Cuadernos':[6,'grado','cuadernos por estudiante del grado'],'Útiles escolares':[1,'grado','kit por estudiante del grado'],'Computadores':[0.25,'sede','1 por cada 4 estudiantes de la sede']};
+var ME={id:'S1',nombre:'Sede rural El Mirador',dep:'Cauca',mun:'Totoró',est:{'Preescolar':3,'1.º':3,'2.º':4,'3.º':3,'4.º':2,'5.º':3}};
+var DEPS={};('Amazonas:Leticia,Puerto Nariño,La Chorrera,Tarapacá|Antioquia:Medellín,Urrao,Frontino,Yarumal,Turbo,Segovia,Andes,Sonsón|Arauca:Arauca,Saravena,Tame,Fortul,Arauquita,Cravo Norte|Atlántico:Barranquilla,Soledad,Sabanalarga,Repelón,Luruaco,Baranoa|Bogotá D.C.:Bogotá,Sumapaz|Bolívar:Cartagena,Magangué,María la Baja,San Jacinto,Santa Rosa del Sur,Simití,El Carmen de Bolívar|Boyacá:Tunja,Chiquinquirá,Soatá,Miraflores,Pisba,Socotá|Caldas:Manizales,Samaná,Riosucio,Salamina,Pensilvania,Aguadas|Caquetá:Florencia,San Vicente del Caguán,Cartagena del Chairá,Solano,Belén de los Andaquíes|Casanare:Yopal,Paz de Ariporo,Hato Corozal,Orocué,Támara|Cauca:Popayán,Totoró,Silvia,Caldono,Argelia,El Tambo,Toribío,Guapi,Timbiquí|Cesar:Valledupar,Pueblo Bello,La Paz,Chimichagua,Curumaní,Manaure Balcón del Cesar|Chocó:Quibdó,Bahía Solano,Nuquí,Istmina,Bojayá,Litoral del San Juan|Córdoba:Montería,Tierralta,Puerto Libertador,San José de Uré,Montelíbano,Lorica|Cundinamarca:Zipaquirá,Guaduas,Útica,Gachetá,Medina,Paratebueno,La Palma|Guainía:Inírida,Barranco Minas,Morichal|Guaviare:San José del Guaviare,Calamar,El Retorno,Miraflores|Huila:Neiva,Pitalito,La Plata,Algeciras,Colombia,Acevedo|La Guajira:Riohacha,Uribia,Manaure,Maicao,Dibulla,Fonseca|Magdalena:Santa Marta,Ciénaga,Aracataca,Fundación,Plato,El Banco|Meta:Villavicencio,La Macarena,Uribe,Puerto Gaitán,Mapiripán,Puerto Concordia|Nariño:Pasto,Tumaco,Ipiales,Barbacoas,Samaniego,Cumbitara,Policarpa|Norte de Santander:Cúcuta,Tibú,Ocaña,El Tarra,Convención,Teorama|Putumayo:Mocoa,Puerto Asís,Orito,Valle del Guamuez,Puerto Leguízamo,Villagarzón|Quindío:Armenia,Salento,Génova,Pijao,Córdoba,Calarcá|Risaralda:Pereira,Pueblo Rico,Mistrató,Quinchía,Santuario,Apía|San Andrés y Providencia:San Andrés,Providencia|Santander:Bucaramanga,San Vicente de Chucurí,Landázuri,Cimitarra,Charalá,Zapatoca|Sucre:Sincelejo,San Marcos,Majagual,Ovejas,Colosó,San Onofre|Tolima:Ibagué,Planadas,Rioblanco,Chaparral,Ataco,Ortega|Valle del Cauca:Cali,Buenaventura,Dagua,Jamundí,El Cairo,Florida|Vaupés:Mitú,Carurú,Taraira|Vichada:Puerto Carreño,Cumaribo,La Primavera,Santa Rosalía').split('|').forEach(function(s){var p=s.split(':');DEPS[p[0]]=p[1].split(',')});
+var S=null,tab='sede',KEY='escuela-ancla-v1',msg='';
+
+function seed(){return{online:true,last:Date.now(),queue:[],n:10,reqs:[
+{id:'R1',sede:'Sede La Playita',dep:'Chocó',cat:'Cuadernos',grado:'3.º',qty:60,nota:'Para 10 estudiantes',st:'publicada',donor:'',rep:0},
+{id:'R2',sede:'Sede Wayúu Pálaa',dep:'La Guajira',cat:'Computadores',grado:'Toda la sede',qty:3,nota:'Sala sin equipos',st:'publicada',donor:'',rep:0},
+{id:'R3',sede:'Sede Caño Seco',dep:'Vichada',cat:'Libros de texto',grado:'1.º',qty:5,nota:'',st:'recibida',donor:'Colegio privado San Ignacio',rep:0,uso:[{rol:'Docente de la sede',res:'ok'}]},
+{id:'R4',sede:'Sede La Esperanza',dep:'Nariño',cat:'Útiles escolares',grado:'4.º',qty:8,nota:'',st:'comprometida',donor:'Secretaría de Educación de Pasto',rep:0}]}}
+function load(){try{var r=localStorage.getItem(KEY);if(r)S=JSON.parse(r)}catch(e){}if(!S)S=seed();if(S.me){ME.dep=S.me.dep;ME.mun=S.me.mun}}
+function setDep(d){act('Ubicación de la sede',function(){ME.dep=d;ME.mun=DEPS[d][0];S.me={dep:ME.dep,mun:ME.mun}})}
+function setMun(m){m=m.trim();if(!m)return;act('Ubicación de la sede',function(){ME.mun=m;S.me={dep:ME.dep,mun:ME.mun}})}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function esc(t){return String(t).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function mine(){return S.reqs.filter(function(r){return r.sede===ME.nombre})}
+function total(){return GR.reduce(function(a,g){return a+ME.est[g]},0)}
+function cap(cat,gr){var c=CAT[cat];var base=c[1]==='sede'?total():ME.est[gr];var mx=Math.floor(base*c[0]);var used=mine().filter(function(r){return r.cat===cat&&(c[1]==='sede'||r.grado===gr)}).reduce(function(a,r){return a+r.qty},0);return{mx:mx,used:used,av:Math.max(0,mx-used)}}
+function act(desc,fn){fn();if(!S.online)S.queue.push(desc);else S.last=Date.now();save();render()}
+function setTab(t){tab=t;msg='';render()}
+function setOnline(v){S.online=v;if(v){S.queue=[];S.last=Date.now();msg='Sincronizado: tus cambios ya están en la red.'}else msg='Sin señal: puedes seguir trabajando. Los cambios se enviarán al volver la conexión.';save();render()}
+
+function bar(){var q=S.queue.length;document.getElementById('bar').innerHTML='<div class="net '+(S.online?'':'off')+'"><span class="dot"></span>'+(S.online?'Con señal · sincronizado':'Sin señal · modo local'+(q?' · '+q+' cambio'+(q>1?'s':'')+' por enviar':''))+'</div><div class="row" style="margin:0"><span class="mu">Datos al '+new Date(S.last).toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'})+'</span><button onclick="setOnline('+!S.online+')">'+(S.online?'Simular que se va la señal':'Simular que vuelve la señal')+'</button></div>'}
+function nav(){var T=[['sede','Mi sede'],['red','Donar a una escuela'],['reg','Registro público'],['ver','Verificación'],['reglas','Reglas justas']];document.getElementById('nav').innerHTML=T.map(function(t){return'<button class="'+(tab===t[0]?'on':'')+'" onclick="setTab(\''+t[0]+'\')">'+t[1]+'</button>'}).join('')}
+function tag(s){var L={confirmar:'Falta 2.º responsable',publicada:'Publicada',comprometida:'Donante comprometido',enviada:'En camino',recibida:'Recibida y confirmada'};return'<span class="tag t-'+s+'">'+L[s]+'</span>'}
+
+function vSede(){
+var rec=mine();var pend=rec.filter(function(r){return r.st==='enviada'}).length;var act_=rec.filter(function(r){return r.st!=='recibida'}).length;
+var rojo=rec.some(function(r){return sem(r)==='rojo'});var blocked=pend>0||act_>=3||rojo;
+var h='<div class="card"><h2>'+esc(ME.nombre)+'</h2><p class="mu">Vereda La Esperanza · '+total()+' estudiantes · aula multigrado</p><div class="grid"><div><label for="dp">Departamento</label><select id="dp" onchange="setDep(this.value)">'+Object.keys(DEPS).map(function(d){return'<option'+(d===ME.dep?' selected':'')+'>'+d+'</option>'}).join('')+'</select></div><div><label for="mn">Municipio</label><input id="mn" list="ml" value="'+esc(ME.mun)+'" onchange="setMun(this.value)"><datalist id="ml">'+(DEPS[ME.dep]||[]).map(function(m){return'<option value="'+m+'">'}).join('')+'</datalist></div></div><p class="mu">Elige de la lista o escribe tu municipio si no aparece.</p></div>';
+h+='<div class="card"><h2>Pedir un recurso</h2>';
+if(rojo)h+='<p class="warn bad">Un recurso recibido fue reportado o marcado como mal usado. La mesa territorial debe revisarlo antes de aprobar nuevos pedidos.</p>';else if(pend>0)h+='<p class="warn bad">Tienes un envío sin confirmar. Confirma que llegó para poder pedir de nuevo.</p>';
+else if(act_>=3)h+='<p class="warn">Tienes 3 pedidos activos. Cuando se cierre uno, puedes crear otro.</p>';
+h+='<div class="grid"><div><label for="c">Qué necesitas</label><select id="c" onchange="upd()">'+Object.keys(CAT).map(function(k){return'<option>'+k+'</option>'}).join('')+'</select></div>';
+h+='<div><label for="g">Grado</label><select id="g" onchange="upd()">'+GR.map(function(g){return'<option>'+g+'</option>'}).join('')+'</select></div>';
+h+='<div><label for="q">Cantidad</label><input id="q" type="number" min="1" value="4" oninput="upd()"></div></div>';
+h+='<label for="n">Para qué lo usarán</label><input id="n" maxlength="120" placeholder="Ejemplo: lectura de segundo grado">';
+h+='<div id="cp" class="mu" style="margin-top:8px"></div><div class="row"><button class="p" id="go" onclick="crear()" '+(blocked?'disabled':'')+'>Pedir recurso</button></div>';
+if(msg)h+='<p class="mu" role="status">'+esc(msg)+'</p>';
+h+='</div><div class="card"><h2>Mis pedidos</h2>';
+if(!rec.length)h+='<p class="mu">Aún no has pedido nada. Empieza con lo que más falta en el aula.</p>';
+rec.forEach(function(r){h+='<div style="border-top:1px solid var(--ln);padding:10px 0"><b>'+r.qty+' · '+esc(r.cat)+'</b> · '+esc(r.grado)+' '+tag(r.st)+(r.donor?'<div class="mu">Donante: '+esc(r.donor)+'</div>':'');
+if(r.st==='confirmar')h+='<div class="row"><button onclick="mv(\''+r.id+'\',\'publicada\',\'Pedido publicado\')">Familia o líder de vereda aprueba</button></div>';
+if(r.st==='enviada')h+='<div class="row"><label style="margin:0"><input type="checkbox" style="width:auto" id="a'+r.id+'" onchange="ck(\''+r.id+'\')"> Docente: llegó completo</label><label style="margin:0"><input type="checkbox" style="width:auto" id="b'+r.id+'" onchange="ck(\''+r.id+'\')"> Familia o líder: llegó completo</label><button class="p" id="k'+r.id+'" disabled onclick="mv(\''+r.id+'\',\'recibida\',\'Recepción confirmada\')">Confirmar recepción</button></div>';
+h+='</div>'});
+return h+'</div>'}
+function upd(){var c=document.getElementById('c').value,g=document.getElementById('g').value,q=+document.getElementById('q').value||0;var k=cap(c,g),sede=CAT[c][1]==='sede';var gEl=document.getElementById('g');gEl.disabled=sede;
+var ok=q>0&&q<=k.av;document.getElementById('cp').innerHTML='Máximo permitido: <b>'+k.mx+'</b> ('+CAT[c][2]+'). Ya pedido: '+k.used+'. Disponible: <b>'+k.av+'</b>.<div class="meter"><i style="width:'+(k.mx?Math.min(100,k.used/k.mx*100):0)+'%"></i></div>'+(q>k.av?'<span class="bad">Esa cantidad supera lo que corresponde a tu matrícula.</span>':'');
+var b=document.getElementById('go');if(b&&!b.dataset.lock){}}
+function ck(id){document.getElementById('k'+id).disabled=!(document.getElementById('a'+id).checked&&document.getElementById('b'+id).checked)}
+function crear(){var c=document.getElementById('c').value,g=document.getElementById('g').value,q=+document.getElementById('q').value,n=document.getElementById('n').value.trim();var k=cap(c,g);
+if(!(q>0)||q>k.av){msg='La cantidad debe estar entre 1 y '+k.av+'.';render();return}
+if(!n){msg='Cuenta para qué lo usarán; así los donantes entienden la necesidad.';render();return}
+var gr=CAT[c][1]==='sede'?'Toda la sede':g;
+act('Nuevo pedido: '+c,function(){S.n++;S.reqs.unshift({id:'R'+S.n,sede:ME.nombre,dep:ME.dep,mun:ME.mun,cat:c,grado:gr,qty:q,nota:n,st:'confirmar',donor:'',rep:0})});msg='Pedido creado. Se publica cuando una familia o líder de la vereda lo apruebe.';render()}
+function mv(id,st,m){act(m,function(){S.reqs.forEach(function(r){if(r.id===id)r.st=st})})}
+
+function vRed(){
+var deps=['Todos'].concat(Object.keys(DEPS));var f=window.fd||'Todos';
+var h='<div class="card"><h2>Pedidos abiertos en Colombia</h2><p class="mu">Solo se dona en especie: la escuela nunca recibe dinero. Elige tu tipo de donante y lo que puedes entregar.</p><div class="grid"><div><label for="fd">Departamento</label><select id="fd" onchange="window.fd=this.value;render()">'+deps.map(function(d){return'<option'+(d===f?' selected':'')+'>'+d+'</option>'}).join('')+'</select></div><div><label for="dn">Tu nombre o entidad</label><input id="dn" value="'+esc(window.dnv||'Colegio Los Andes (privado)')+'" oninput="window.dnv=this.value"></div></div></div>';
+var L=S.reqs.filter(function(r){return r.st==='publicada'&&(f==='Todos'||r.dep===f)});
+if(!L.length)h+='<div class="card"><p class="mu">No hay pedidos abiertos en este filtro.</p></div>';
+L.forEach(function(r){h+='<div class="card"><b>'+r.qty+' · '+esc(r.cat)+'</b> · '+esc(r.grado)+'<div class="mu">'+esc(r.sede)+', '+(r.mun?esc(r.mun)+', ':'')+r.dep+(r.nota?' · '+esc(r.nota):'')+'</div><div class="row"><button class="p" onclick="don(\''+r.id+'\')">Me comprometo a donarlo</button></div></div>'});
+h+='<div class="card"><h2>Mis compromisos de donación</h2>';var C=S.reqs.filter(function(r){return r.donor&&r.donor===(window.dnv||'Colegio Los Andes (privado)')&&r.st==='comprometida'});
+if(!C.length)h+='<p class="mu">Cuando te comprometas con un pedido, aparecerá aquí para marcarlo como enviado.</p>';
+C.forEach(function(r){h+='<div class="row"><span>'+r.qty+' · '+esc(r.cat)+' → '+esc(r.sede)+'</span><button onclick="mv(\''+r.id+'\',\'enviada\',\'Envío registrado\')">Ya lo envié</button></div>'});
+return h+'</div>'}
+function don(id){var n=(window.dnv||'Colegio Los Andes (privado)').trim()||'Donante anónimo';act('Compromiso de donación',function(){S.reqs.forEach(function(r){if(r.id===id){r.st='comprometida';r.donor=n}})})}
+
+function vReg(){var h='<div class="card"><h2>Todo lo que se pide y se entrega</h2><p class="mu">Cualquiera puede revisar el registro. Si algo no cuadra, puede reportarlo.</p>';
+var rc=S.reqs.filter(function(r){return r.st==='recibida'}).length;h+='<p><b>'+rc+'</b> de '+S.reqs.length+' pedidos cerrados con recepción confirmada por dos personas.</p><div class="tw"><table><tr><th>Sede</th><th>Depto.</th><th>Recurso</th><th>Cant.</th><th>Estado</th><th>Donante</th><th></th></tr>';
+S.reqs.forEach(function(r){h+='<tr><td>'+esc(r.sede)+'</td><td>'+(r.mun?esc(r.mun)+', ':'')+r.dep+'</td><td>'+esc(r.cat)+' · '+esc(r.grado)+'</td><td>'+r.qty+'</td><td>'+tag(r.st)+'</td><td>'+esc(r.donor||'—')+'</td><td><button onclick="rep(\''+r.id+'\')">Reportar'+(r.rep?' ('+r.rep+')':'')+'</button></td></tr>'});
+return h+'</table></div></div>'}
+function rep(id){act('Reporte ciudadano',function(){S.reqs.forEach(function(r){if(r.id===id)r.rep++})})}
+
+function sem(r){if(r.st!=='recibida')return'';var u=r.uso||[];if(r.rep>=2||u.some(function(x){return x.res==='no'}))return'rojo';var o={};u.forEach(function(x){if(x.res==='ok')o[x.rol]=1});return Object.keys(o).length>=2?'verde':'amarillo'}
+function stag(r){var s=sem(r),L={verde:'Se usa bien',amarillo:'Falta verificar',rojo:'Revisión urgente'};return'<span class="tag '+(s==='rojo'?'bad':s==='verde'?'t-recibida':'t-confirmar')+'">'+L[s]+'</span>'}
+var ROLES=['Docente de la sede','Familia de la vereda','Visita de la secretaría o ONG','Donante'],RES={ok:'Se usa bien',parcial:'Se usa a medias',no:'No se usa o se vendió'};
+function vote(id){var ro=document.getElementById('ro'+id).value,rs=document.getElementById('rs'+id).value;act('Verificación de uso',function(){S.reqs.forEach(function(r){if(r.id===id){r.uso=(r.uso||[]).filter(function(x){return x.rol!==ro});r.uso.push({rol:ro,res:rs})}})})}
+function vVer(){var R=S.reqs.filter(function(r){return r.st==='recibida'}),c={verde:0,amarillo:0,rojo:0},A=[];
+R.forEach(function(r){c[sem(r)]++;if(sem(r)==='rojo')A.push(esc(r.cat)+' en '+esc(r.sede)+' fue reportado o marcado como mal usado. Pasa a revisión de la mesa territorial.')});
+Object.keys(CAT).forEach(function(k){(CAT[k][1]==='sede'?['']:GR).forEach(function(g){var x=cap(k,g);if(x.mx>0&&x.used>0&&x.used/x.mx>=0.9)A.push('Tu sede ya pidió el '+Math.round(x.used/x.mx*100)+' % de su cupo de '+k.toLowerCase()+(g?' de '+g:'')+'. Se revisa antes de aprobar más.')})});
+var h='<div class="card"><h2>Verificación continua del uso</h2><p class="mu">Recibir no basta. Cada recurso se revisa después, con personas distintas, para confirmar que se usa en el aula y no se vendió ni se desvió. En la versión real hay revisiones a los 30, 90 y 180 días, y cada una pide foto o audio.</p><p><b>'+c.verde+'</b> se usan bien · <b>'+c.amarillo+'</b> falta verificar · <b class="bad">'+c.rojo+'</b> en revisión urgente</p></div>';
+h+='<div class="card"><h2>Alertas automáticas</h2>'+(A.length?A.map(function(a){return'<p class="warn">'+a+'</p>'}).join(''):'<p class="mu">Sin alertas por ahora.</p>')+'</div>';
+R.forEach(function(r){var u=r.uso||[];h+='<div class="card"><b>'+r.qty+' · '+esc(r.cat)+'</b> · '+esc(r.grado)+' '+stag(r)+'<div class="mu">'+esc(r.sede)+' · donó '+esc(r.donor)+'</div>'+(u.length?u.map(function(x){return'<div class="mu">• '+x.rol+': '+RES[x.res]+'</div>'}).join(''):'<div class="mu">Aún sin verificaciones.</div>')+'<div class="mu">Pasa a «Se usa bien» cuando dos personas distintas lo confirman.</div><div class="row"><select id="ro'+r.id+'" style="width:auto">'+ROLES.map(function(x){return'<option>'+x+'</option>'}).join('')+'</select><select id="rs'+r.id+'" style="width:auto">'+Object.keys(RES).map(function(k){return'<option value="'+k+'">'+RES[k]+'</option>'}).join('')+'</select><button onclick="vote(\''+r.id+'\')">Registrar verificación</button></div></div>'});
+if(!R.length)h+='<div class="card"><p class="mu">Cuando se confirme una recepción, el recurso aparecerá aquí para verificar su uso.</p></div>';
+return h}
+function vReglas(){var R=[['Cupo por matrícula','Nadie puede pedir más de lo que corresponde a sus estudiantes. La sede ve su máximo antes de enviar.'],['Dos personas, siempre','Un pedido se publica solo si lo aprueba alguien de la comunidad además del docente, y una entrega se cierra solo con la confirmación de ambos.'],['Solo en especie','Nunca llega dinero a la escuela ni a una persona. Los donantes entregan el recurso directamente en la sede.'],['Pedido nuevo, entrega confirmada','Mientras un envío no esté confirmado, la sede no puede pedir más. Máximo tres pedidos activos a la vez.'],['Verificación continua','Después de recibir, personas distintas (docente, familia, visita de la secretaría o ONG, donante) confirman que el recurso se usa en el aula. Si alguien lo marca como no usado o vendido, o hay dos reportes, la sede pasa a revisión y no puede pedir más hasta que la mesa territorial resuelva.'],['Registro abierto','Cada pedido y entrega queda visible. Los reportes se acumulan y los pedidos con reportes se revisan en la mesa territorial.'],['Lo recibido se queda en la escuela','Los recursos quedan marcados para uso escolar y su destino se verifica en las visitas a la vereda.']];
+return'<div class="card"><h2>Cómo se evita el abuso</h2>'+R.map(function(r){return'<div class="rule"><b>✓</b><div><b>'+r[0]+'.</b> '+r[1]+'</div></div>'}).join('')+'</div><div class="card"><h2>Cómo funciona sin internet</h2><p>La página se guarda en el celular o el computador de la escuela. Los pedidos se anotan en el aparato y esperan en una cola; cuando aparece señal, se envían solos. Prueba el botón de arriba para simularlo.</p></div>'}
+
+function render(){bar();nav();document.getElementById('view').innerHTML=tab==='sede'?vSede():tab==='red'?vRed():tab==='reg'?vReg():tab==='ver'?vVer():vReglas();if(tab==='sede')upd()}
+load();render();
+</script>
+</body>
+</html>
